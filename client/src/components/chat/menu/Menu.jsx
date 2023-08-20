@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 //components
 import Header from "./Header";
 import Search from "./Search";
+import Conversations from "./Conversations";
 import styled from "@emotion/styled";
 
 const Menu = ()=>{
@@ -10,6 +11,7 @@ const Menu = ()=>{
         <Box>
             <Header />
             <Search />
+            <Conversations />
         </Box>
     );
 }
