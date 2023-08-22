@@ -5,6 +5,7 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import MicIcon from '@mui/icons-material/Mic';
 import styled from "@emotion/styled";
+import { useState } from "react";
 
 const Container = styled(Box)`
     height:55px;
@@ -38,13 +39,14 @@ const ClipIcon = styled(AttachFileOutlinedIcon)`
     transform: rotate(40deg);
 `;
 
-const Footer = ()=>{
+const Footer = ({sendText, setValue, value})=>{
+    
     return(
         <Container>
             <EmojiEmotionsOutlinedIcon />
             <ClipIcon />
             <Search>
-                <InputField placeholder="Type a message"/>
+                <InputField placeholder="Type a message" onChange={(e)=>setValue(e.target.value)} onKeyPress={(e)=> sendText(e)} value={value}/>
             </Search>
             <MicIcon />
         </Container>
