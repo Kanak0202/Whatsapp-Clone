@@ -30,6 +30,7 @@ const Messages = ({person, conversation})=>{
     const [value, setValue ] = useState('');
     const [messages, setMessages] = useState([]);
     const [newMessageFlag, setMessageFlag] = useState(false);
+    const [file, setFile] = useState();
 
     const {account} = useContext(AccountContext);
 
@@ -68,7 +69,7 @@ const Messages = ({person, conversation})=>{
                     ))
                 }
             </Component>
-            <Footer sendText={sendText} setValue={setValue} value={value}/>
+            <Footer sendText={sendText} setValue={setValue} value={value} file={file} setFile={setFile}/>
         </Wrapper>
     );
 }
