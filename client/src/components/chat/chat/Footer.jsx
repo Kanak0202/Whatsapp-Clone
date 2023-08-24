@@ -42,7 +42,7 @@ const ClipIcon = styled(AttachFileOutlinedIcon)`
     transform: rotate(40deg);
 `;
 
-const Footer = ({sendText, setValue, value, file, setFile})=>{
+const Footer = ({sendText, setValue, value, file, setFile, setImage})=>{
     useEffect(()=>{
         const getImage = async()=>{
             if(file){
@@ -50,13 +50,13 @@ const Footer = ({sendText, setValue, value, file, setFile})=>{
                 data.append("name", file.name);
                 data.append("file", file);
 
-                await uploadFile(data);
+                let response = await uploadFile(data);
+                setImage(response.data);
             }
         }
         getImage();
     },[file])
     const onFileChange = (e)=>{
-        console.log(e);
         setFile(e.target.files[0]);
         setValue(e.target.files[0].name);
     }

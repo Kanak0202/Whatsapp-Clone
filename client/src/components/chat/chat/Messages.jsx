@@ -31,6 +31,7 @@ const Messages = ({person, conversation})=>{
     const [messages, setMessages] = useState([]);
     const [newMessageFlag, setMessageFlag] = useState(false);
     const [file, setFile] = useState();
+    const [image, setImage] = useState();
 
     const {account} = useContext(AccountContext);
 
@@ -45,15 +46,28 @@ const Messages = ({person, conversation})=>{
     const sendText = async(e)=>{
         const code = e.keyCode || e.which;
         if(code === 13){
-            let message = {
+            let message = {};
+            if(!file){
+            message = {
                 senderId: account.sub,
                 receiverId:person.sub,
                 conversationId: conversation._id,
                 type:'text',
                 text:value,
             }
+        }else{
+            message = {
+                senderId: account.sub,
+                receiverId:person.sub,
+                conversationId: conversation._id,
+                type:'file',
+                text:image,
+            }
+        }
             await newMessage(message);
             setValue('');
+            setFile('');
+            setImage('');
             setMessageFlag(prev => !prev);
         }
 
@@ -69,7 +83,7 @@ const Messages = ({person, conversation})=>{
                     ))
                 }
             </Component>
-            <Footer sendText={sendText} setValue={setValue} value={value} file={file} setFile={setFile}/>
+            <Footer sendText={sendText} setValue={setValue} value={value} file={file} setFile={setFile} setImage={setImage}/>
         </Wrapper>
     );
 }
