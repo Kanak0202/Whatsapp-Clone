@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
@@ -29,11 +29,23 @@ const Container = styled(Box)`
 const Messages = ({person, conversation})=>{
     const [value, setValue ] = useState('');
     const [messages, setMessages] = useState([]);
-    const [newMessageFlag, setMessageFlag] = useState(false);
+    
     const [file, setFile] = useState();
     const [image, setImage] = useState();
+    const [incomingMessage, setIncomingMessage] = useState(null);
 
-    const {account} = useContext(AccountContext);
+    const scrollRef = useRef();
+
+    const {account, socket, newMessageFlag, setMessageFlag} = useContext(AccountContext);
+
+    useEffect(()=>{
+        socket.current.on('getMessage', data=>{
+            setIncomingMessage({
+                ...data,
+                createdAt: Date.now()
+            })
+        })
+    },[])
 
     useEffect(()=>{
         const getMessageDetails = async()=>{
@@ -41,7 +53,16 @@ const Messages = ({person, conversation})=>{
             setMessages(data);
         }
         conversation._id && getMessageDetails();
-    },[person._id, conversation._id, newMessageFlag])
+    },[person._id, conversation._id, newMessageFlag]);
+
+    useEffect(()=>{
+        scrollRef.current?.scrollIntoView({transition: 'smooth'});
+    }, [messages]);
+
+    useEffect(()=>{
+        incomingMessage && conversation?.members?.includes(incomingMessage.senderId) && setMessages(prev => [...prev, incomingMessage]);
+    }, [incomingMessage, conversation])
+
     
     const sendText = async(e)=>{
         const code = e.keyCode || e.which;
@@ -64,6 +85,7 @@ const Messages = ({person, conversation})=>{
                 text:image,
             }
         }
+        socket.current.emit('sendMessage', message);
             await newMessage(message);
             setValue('');
             setFile('');
@@ -77,7 +99,7 @@ const Messages = ({person, conversation})=>{
             <Component>
                 {
                     messages && messages.map(message=>(
-                        <Container>
+                        <Container ref={scrollRef}>
                             <Message message={message}/>
                         </Container>
                     ))

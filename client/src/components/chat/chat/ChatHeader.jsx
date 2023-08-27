@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useContext } from "react";
 
 //icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -6,6 +7,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import styled from "@emotion/styled";
 
 import { defaultProfilePicture } from "../../../constants/data";
+
+//context
+import {AccountContext} from "../../../context/AccountProvider";
 
 const Header = styled(Box)`
     height:44px;
@@ -42,12 +46,13 @@ const RightContainer = styled(Box)`
 `;
 
 const ChatHeader = ({person})=>{
+    const {activeUsers} = useContext(AccountContext);
     return(
         <Header>
             <Image src={person.picture} alt="dp" />
             <Box>
                 <Name>{person.name}</Name>
-                <Status>Offline</Status>
+                <Status>{activeUsers?.find(user => user.sub === person.sub) ? 'Online' : 'Offline'}</Status>
             </Box>
             <RightContainer>
                 <SearchIcon />
